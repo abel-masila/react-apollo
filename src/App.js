@@ -2,6 +2,8 @@ import React from "react";
 import { gql } from "apollo-boost";
 import { Query } from "react-apollo";
 
+import Repos from "./Repos";
+
 import "./App.css";
 
 const query = gql`
@@ -29,6 +31,7 @@ function App() {
           );
         }}
       </Query>
+      <Repos />
     </div>
   );
 }

@@ -12,7 +12,7 @@ const client = new ApolloClient({
   request: operation => {
     operation.setContext({
       headers: {
-        authorization: `Bearer 47b8591faf98a5fc7bc56be88bd57dd6a5e6a367`
+        authorization: `Bearer ${process.env.REACT_APP_GIT_TOKEN}`
       }
     });
   }
