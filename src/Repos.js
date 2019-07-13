@@ -16,19 +16,36 @@ const reposQuery = gql`
   }
 `;
 class Repos extends Component {
+  handleMore = (data, fetchMore, current) => {
+    fetchMore({
+      variables: { first: current + 10 },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        if (!fetchMoreResult) {
+          return prev;
+        }
+        return Object.assign(prev, fetchMoreResult);
+      }
+    });
+  };
   render() {
     return (
-      <Query query={reposQuery} variables={{ first: 20 }}>
-        {({ data, loading, error }) => {
+      <Query query={reposQuery} variables={{ first: 10 }}>
+        {({ data, loading, fetchMore, error }) => {
           if (loading) return <p>loading...</p>;
           if (error) return <p>{error.message}</p>;
+          let current = data.viewer.repositories.edges.length;
           return (
-            <ul>
-              <h2>First 20 repositories</h2>
-              {data.viewer.repositories.edges.map(({ node }) => (
-                <li key={node.name}>{node.name}</li>
-              ))}
-            </ul>
+            <div>
+              <ul>
+                <h2>First {current}repositories</h2>
+                {data.viewer.repositories.edges.map(({ node }) => (
+                  <li key={node.name}>{node.name}</li>
+                ))}
+              </ul>
+              <button onClick={() => this.handleMore(data, fetchMore, current)}>
+                Load more
+              </button>
+            </div>
           );
         }}
       </Query>
