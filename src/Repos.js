@@ -1,20 +1,9 @@
 import React, { Component } from "react";
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
+import { reposQuery } from "./queries";
+import ShowRepos from "./ShowRepos";
 
-const reposQuery = gql`
-  query Myrepositories($first: Int!) {
-    viewer {
-      repositories(first: $first) {
-        edges {
-          node {
-            name
-          }
-        }
-      }
-    }
-  }
-`;
 class Repos extends Component {
   handleMore = (data, fetchMore, current) => {
     fetchMore({
@@ -30,22 +19,17 @@ class Repos extends Component {
   render() {
     return (
       <Query query={reposQuery} variables={{ first: 10 }}>
-        {({ data, loading, fetchMore, error }) => {
+        {({ data, loading, fetchMore, error, refetch }) => {
           if (loading) return <p>loading...</p>;
           if (error) return <p>{error.message}</p>;
           let current = data.viewer.repositories.edges.length;
           return (
-            <div>
-              <ul>
-                <h2>First {current}repositories</h2>
-                {data.viewer.repositories.edges.map(({ node }) => (
-                  <li key={node.name}>{node.name}</li>
-                ))}
-              </ul>
-              <button onClick={() => this.handleMore(data, fetchMore, current)}>
-                Load more
-              </button>
-            </div>
+            <ShowRepos
+              current={current}
+              refetch={refetch}
+              data={data}
+              handleMore={() => this.handleMore(data, fetchMore, current)}
+            />
           );
         }}
       </Query>
