@@ -27,4 +27,29 @@ const userQuery = gql`
   }
 `;
 
-export { reposQuery, userQuery };
+const addStarquery = gql`
+  mutation AddStar($repoid: ID!) {
+    addStar(input: { starrableId: $repoid }) {
+      starrable {
+        stargazers {
+          totalCount
+        }
+        viewerHasStarred
+      }
+    }
+  }
+`;
+const removeStarquery = gql`
+  mutation RemoveStar($repoid: ID!) {
+    removeStar(input: { starrableId: $repoid }) {
+      starrable {
+        stargazers {
+          totalCount
+        }
+        viewerHasStarred
+      }
+    }
+  }
+`;
+
+export { reposQuery, userQuery, addStarquery, removeStarquery };
